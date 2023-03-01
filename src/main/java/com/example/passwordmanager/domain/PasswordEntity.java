@@ -1,7 +1,6 @@
 package com.example.passwordmanager.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Log4j2
 @Table(name = "password_entity")
 @NoArgsConstructor
-@Getter
+@Data
 public class PasswordEntity {
 
     @Id
@@ -38,9 +37,4 @@ public class PasswordEntity {
 
     @Column(name = "password", nullable = false)
     private String password;
-
-    public PasswordEntity(String name, String password) {
-        this.name = name;
-        this.password = password;
-    }
 }
