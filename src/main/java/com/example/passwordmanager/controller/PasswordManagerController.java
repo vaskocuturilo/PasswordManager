@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.passwordmanager.services.PasswordManagerService;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/passwords")
 public class PasswordManagerController {
     private final PasswordManagerService passwordManagerService;
 
@@ -14,12 +14,7 @@ public class PasswordManagerController {
         this.passwordManagerService = passwordManagerService;
     }
 
-    @GetMapping("")
-    public String getMainPage() {
-        return "Status is OK.";
-    }
-
-    @GetMapping("/passwords/{name}")
+    @GetMapping("/{name}")
     public ResponseEntity getPassword(@PathVariable String name) {
         try {
             return ResponseEntity.ok(passwordManagerService.getPasswordByName(name));
@@ -28,7 +23,7 @@ public class PasswordManagerController {
         }
     }
 
-    @PostMapping("/passwords")
+    @PostMapping
     public ResponseEntity createPassword(@RequestBody PasswordEntity passwordEntity) {
         try {
             return ResponseEntity.ok(passwordManagerService.create(passwordEntity));
@@ -41,6 +36,15 @@ public class PasswordManagerController {
     public ResponseEntity getAllPasswords() {
         try {
             return ResponseEntity.ok(passwordManagerService.getAllPasswords());
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity updatePassword(@RequestBody PasswordEntity passwordEntity) {
+        try {
+            return ResponseEntity.ok(passwordManagerService.updatePassword(passwordEntity));
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
