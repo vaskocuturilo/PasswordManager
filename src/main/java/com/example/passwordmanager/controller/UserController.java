@@ -17,10 +17,19 @@ public class UserController {
     }
 
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity getAllUsers() {
         try {
             return ResponseEntity.ok(userService.getAllUsers());
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getOneUser(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(userService.getOneUser(id));
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
@@ -32,6 +41,16 @@ public class UserController {
             return ResponseEntity.ok(userService.createUser(user));
         } catch (UserAlreadyExist exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok("User was delete.");
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }

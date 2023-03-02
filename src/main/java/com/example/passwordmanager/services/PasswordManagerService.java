@@ -1,27 +1,25 @@
 package com.example.passwordmanager.services;
 
 import com.example.passwordmanager.domain.PasswordEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.example.passwordmanager.domain.UserEntity;
+import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.example.passwordmanager.repositories.PasswordManagerRepository;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class PasswordManagerService {
 
     private final PasswordManagerRepository passwordManagerRepository;
 
-    public PasswordManagerService(PasswordManagerRepository passwordManagerRepository) {
+    private final UserRepository userRepository;
+
+    public PasswordManagerService(PasswordManagerRepository passwordManagerRepository, UserRepository userRepository) {
         this.passwordManagerRepository = passwordManagerRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<PasswordEntity> getAllPasswords() {
+    public Iterable<PasswordEntity> getAllPasswords() {
+
         return passwordManagerRepository.findAll();
     }
 
@@ -29,14 +27,10 @@ public class PasswordManagerService {
         return passwordManagerRepository.findByName(name).get();
     }
 
-    public ResponseEntity create(PasswordEntity passwordEntity) {
-
-        PasswordEntity save = passwordManagerRepository.save(passwordEntity);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(passwordEntity.getId()).toUri();
-
-        return ResponseEntity.created(location).body(save);
+    public PasswordEntity create(PasswordEntity passwordEntity, Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).get();
+        passwordEntity.setUser(userEntity);
+        return passwordManagerRepository.save(passwordEntity);
     }
 
     public PasswordEntity updatePassword(PasswordEntity entity) {
@@ -46,5 +40,9 @@ public class PasswordManagerService {
 
         passwordManagerRepository.save(entity);
         return null;
+    }
+
+    public void deletePassword(Long id) {
+        passwordManagerRepository.deleteById(id);
     }
 }

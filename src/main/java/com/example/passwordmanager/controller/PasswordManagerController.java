@@ -1,9 +1,9 @@
 package com.example.passwordmanager.controller;
 
 import com.example.passwordmanager.domain.PasswordEntity;
+import com.example.passwordmanager.services.PasswordManagerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.passwordmanager.services.PasswordManagerService;
 
 @RestController
 @RequestMapping("/api/v1/passwords")
@@ -24,15 +24,16 @@ public class PasswordManagerController {
     }
 
     @PostMapping
-    public ResponseEntity createPassword(@RequestBody PasswordEntity passwordEntity) {
+    public ResponseEntity createPassword(@RequestBody PasswordEntity passwordEntity,
+                                         @RequestParam Long userId) {
         try {
-            return ResponseEntity.ok(passwordManagerService.create(passwordEntity));
+            return ResponseEntity.ok(passwordManagerService.create(passwordEntity, userId));
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
     }
 
-    @GetMapping(value = "/passwords/all")
+    @GetMapping(value = "/all")
     public ResponseEntity getAllPasswords() {
         try {
             return ResponseEntity.ok(passwordManagerService.getAllPasswords());
@@ -45,6 +46,16 @@ public class PasswordManagerController {
     public ResponseEntity updatePassword(@RequestBody PasswordEntity passwordEntity) {
         try {
             return ResponseEntity.ok(passwordManagerService.updatePassword(passwordEntity));
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletePassword(@PathVariable Long id) {
+        try {
+            passwordManagerService.deletePassword(id);
+            return ResponseEntity.ok("The password entity was delete.");
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
