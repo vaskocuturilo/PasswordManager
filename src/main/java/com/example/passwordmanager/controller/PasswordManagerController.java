@@ -1,9 +1,11 @@
 package com.example.passwordmanager.controller;
 
-import com.example.passwordmanager.domain.PasswordEntity;
+import com.example.passwordmanager.entity.PasswordEntity;
 import com.example.passwordmanager.services.PasswordManagerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/passwords")
@@ -25,7 +27,7 @@ public class PasswordManagerController {
 
     @PostMapping
     public ResponseEntity createPassword(@RequestBody PasswordEntity passwordEntity,
-                                         @RequestParam Long userId) {
+                                         @RequestParam UUID userId) {
         try {
             return ResponseEntity.ok(passwordManagerService.create(passwordEntity, userId));
         } catch (Exception exception) {
@@ -52,7 +54,7 @@ public class PasswordManagerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletePassword(@PathVariable Long id) {
+    public ResponseEntity deletePassword(@PathVariable UUID id) {
         try {
             passwordManagerService.deletePassword(id);
             return ResponseEntity.ok("The password entity was delete.");

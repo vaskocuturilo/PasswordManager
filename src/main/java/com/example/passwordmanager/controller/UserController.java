@@ -1,10 +1,12 @@
 package com.example.passwordmanager.controller;
 
-import com.example.passwordmanager.domain.UserEntity;
+import com.example.passwordmanager.entity.UserEntity;
 import com.example.passwordmanager.exceptions.UserAlreadyExist;
 import com.example.passwordmanager.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -27,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getOneUser(@PathVariable Long id) {
+    public ResponseEntity getOneUser(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok(userService.getOneUser(id));
         } catch (Exception exception) {
@@ -47,7 +49,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable Long id) {
+    public ResponseEntity deleteUser(@PathVariable UUID id) {
         try {
             userService.deleteUser(id);
             return ResponseEntity.ok("User was delete.");
