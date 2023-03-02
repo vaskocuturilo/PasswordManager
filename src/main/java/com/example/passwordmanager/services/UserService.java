@@ -1,9 +1,11 @@
 package com.example.passwordmanager.services;
 
-import com.example.passwordmanager.domain.UserEntity;
+import com.example.passwordmanager.entity.UserEntity;
 import com.example.passwordmanager.exceptions.UserAlreadyExist;
 import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -24,11 +26,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public UserEntity getOneUser(final Long id) {
+    public UserEntity getOneUser(final UUID id) {
         return userRepository.findById(id).get();
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(UUID id) {
         userRepository.deleteById(id);
     }
 }

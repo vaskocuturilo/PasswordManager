@@ -1,10 +1,12 @@
 package com.example.passwordmanager.services;
 
-import com.example.passwordmanager.domain.PasswordEntity;
-import com.example.passwordmanager.domain.UserEntity;
+import com.example.passwordmanager.entity.PasswordEntity;
+import com.example.passwordmanager.entity.UserEntity;
 import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import com.example.passwordmanager.repositories.PasswordManagerRepository;
+
+import java.util.UUID;
 
 @Service
 public class PasswordManagerService {
@@ -27,7 +29,7 @@ public class PasswordManagerService {
         return passwordManagerRepository.findByName(name).get();
     }
 
-    public PasswordEntity create(PasswordEntity passwordEntity, Long userId) {
+    public PasswordEntity create(PasswordEntity passwordEntity, UUID userId) {
         UserEntity userEntity = userRepository.findById(userId).get();
         passwordEntity.setUser(userEntity);
         return passwordManagerRepository.save(passwordEntity);
@@ -42,7 +44,7 @@ public class PasswordManagerService {
         return null;
     }
 
-    public void deletePassword(Long id) {
+    public void deletePassword(UUID id) {
         passwordManagerRepository.deleteById(id);
     }
 }
