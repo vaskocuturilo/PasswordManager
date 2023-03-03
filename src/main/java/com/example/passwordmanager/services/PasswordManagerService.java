@@ -1,5 +1,6 @@
 package com.example.passwordmanager.services;
 
+import com.example.passwordmanager.domain.PasswordModel;
 import com.example.passwordmanager.entity.PasswordEntity;
 import com.example.passwordmanager.entity.UserEntity;
 import com.example.passwordmanager.repositories.UserRepository;
@@ -25,8 +26,8 @@ public class PasswordManagerService {
         return passwordManagerRepository.findAll();
     }
 
-    public PasswordEntity getPasswordByName(final String name) {
-        return passwordManagerRepository.findByName(name).get();
+    public PasswordModel getPasswordByName(final String name) {
+        return PasswordModel.toModel(passwordManagerRepository.findByName(name).get());
     }
 
     public PasswordEntity create(PasswordEntity passwordEntity, UUID userId) {
@@ -40,8 +41,8 @@ public class PasswordManagerService {
         exist.setName(entity.getName());
         exist.setPassword(entity.getPassword());
 
-        passwordManagerRepository.save(entity);
-        return null;
+        return passwordManagerRepository.save(entity);
+
     }
 
     public void deletePassword(UUID id) {

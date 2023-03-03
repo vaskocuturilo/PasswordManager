@@ -1,5 +1,6 @@
 package com.example.passwordmanager.services;
 
+import com.example.passwordmanager.domain.UserModel;
 import com.example.passwordmanager.entity.UserEntity;
 import com.example.passwordmanager.exceptions.UserAlreadyExist;
 import com.example.passwordmanager.repositories.UserRepository;
@@ -26,8 +27,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public UserEntity getOneUser(final UUID id) {
-        return userRepository.findById(id).get();
+    public UserModel getOneUser(final UUID id) {
+        return UserModel.toUserModel(userRepository.findById(id).get());
     }
 
     public void deleteUser(UUID id) {
