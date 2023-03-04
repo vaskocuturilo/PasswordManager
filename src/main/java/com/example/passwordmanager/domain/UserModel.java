@@ -12,12 +12,14 @@ public class UserModel {
 
     UUID id;
     private String username;
+    private Boolean active;
     List<PasswordModel> passwordEntityList;
 
     public static UserModel toUserModel(UserEntity userEntity) {
         UserModel userModel = new UserModel();
         userModel.setId(userEntity.getId());
         userModel.setUsername(userEntity.getUsername());
+        userModel.setActive(userEntity.getActive());
         userModel.setPasswordEntityList(userEntity.getPasswordEntities()
                 .stream()
                 .map(PasswordModel::toModel)

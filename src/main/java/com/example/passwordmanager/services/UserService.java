@@ -12,7 +12,7 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, OneTimePasswordService oneTimePasswordService) {
         this.userRepository = userRepository;
     }
 
@@ -24,6 +24,7 @@ public class UserService {
         if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new UserAlreadyExist("User already exist, please change the username");
         }
+
         return userRepository.save(user);
     }
 
@@ -33,5 +34,11 @@ public class UserService {
 
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
+    }
+
+    public UserModel activeUser(UUID id) {
+        UserEntity existUser = userRepository.findById(id).get();
+        existUser.setActive(!existUser.getActive());
+        return UserModel.toUserModel(userRepository.save(existUser));
     }
 }

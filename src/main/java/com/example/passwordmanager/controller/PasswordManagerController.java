@@ -1,6 +1,7 @@
 package com.example.passwordmanager.controller;
 
 import com.example.passwordmanager.entity.PasswordEntity;
+import com.example.passwordmanager.exceptions.UserNotActive;
 import com.example.passwordmanager.services.PasswordManagerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,8 @@ public class PasswordManagerController {
                                          @RequestParam UUID userId) {
         try {
             return ResponseEntity.ok(passwordManagerService.create(passwordEntity, userId));
+        } catch (UserNotActive exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
