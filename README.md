@@ -11,7 +11,6 @@ The Spring Boot REST service for password manager application.
 - Use last MySQL database version.
 - Create REST API service.
 - Create docker compose for run service.
-- Create front end for app.
 - provide code and clear instructions how to run it.
 
 **Note**: please put your code in public repository.
@@ -31,8 +30,7 @@ You will need the following technologies available to try it out:
 ## TO-DO list (ASAP):
 
 - Create functionality for store passwords to databases with encryption.
-- Add login/register pages.
+- Add one time password functionality. 
+- Add active a new user functionality.
 - Add unit tests. 
 - Add API tests. 
-- Add UI tests. 
-- Add Front end (Thymeleaf).
