@@ -48,6 +48,15 @@ public class UserController {
         }
     }
 
+    @PutMapping
+    public ResponseEntity activeUser(@RequestParam UUID id) {
+        try {
+            return ResponseEntity.ok(userService.activeUser(id));
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable UUID id) {
         try {

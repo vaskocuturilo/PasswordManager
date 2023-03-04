@@ -3,6 +3,7 @@ package com.example.passwordmanager.services;
 import com.example.passwordmanager.domain.PasswordModel;
 import com.example.passwordmanager.entity.PasswordEntity;
 import com.example.passwordmanager.entity.UserEntity;
+import com.example.passwordmanager.exceptions.UserNotActive;
 import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import com.example.passwordmanager.repositories.PasswordManagerRepository;
@@ -30,8 +31,11 @@ public class PasswordManagerService {
         return PasswordModel.toModel(passwordManagerRepository.findByName(name).get());
     }
 
-    public PasswordEntity create(PasswordEntity passwordEntity, UUID userId) {
+    public PasswordEntity create(PasswordEntity passwordEntity, UUID userId) throws UserNotActive {
         UserEntity userEntity = userRepository.findById(userId).get();
+        if (!userEntity.getActive()) {
+            throw new UserNotActive("The user with userId = " + userEntity.getId() + " is not active. Please confirm user with one time password.");
+        }
         passwordEntity.setUser(userEntity);
         return passwordManagerRepository.save(passwordEntity);
     }

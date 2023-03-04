@@ -3,17 +3,14 @@ package com.example.passwordmanager.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.List;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_entity")
-@NoArgsConstructor
 @Data
-public class UserEntity {
+public class OneTimePasswordEntity {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -28,15 +25,12 @@ public class UserEntity {
     )
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
-    private String username;
-    private String password;
-    private Boolean active = false;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonIgnore
-    List<PasswordEntity> passwordEntities;
+    private Integer oneTimePasswordCode;
+    private Date expires;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToOne
+    @JoinColumn(name = "user_id")
     @JsonIgnore
-    OneTimePasswordEntity oneTimePasswordEntity;
+    UserEntity user;
 }
