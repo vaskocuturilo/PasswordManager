@@ -2,7 +2,9 @@ package com.example.passwordmanager.services;
 
 import com.example.passwordmanager.domain.UserModel;
 import com.example.passwordmanager.entity.UserEntity;
+import com.example.passwordmanager.exceptions.OneTimePasswordErrorException;
 import com.example.passwordmanager.exceptions.UserAlreadyExist;
+import com.example.passwordmanager.repositories.OneTimePasswordRepository;
 import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,12 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final OneTimePasswordRepository oneTimePasswordRepository;
 
-    public UserService(UserRepository userRepository, OneTimePasswordService oneTimePasswordService) {
+    public UserService(UserRepository userRepository,
+                       OneTimePasswordRepository oneTimePasswordRepository) {
         this.userRepository = userRepository;
+        this.oneTimePasswordRepository = oneTimePasswordRepository;
     }
 
     public Iterable<UserEntity> getAllUsers() {
@@ -36,8 +41,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public UserModel activeUser(UUID id) {
+    public UserModel activeUser(final UUID id, final Integer oneTimePasswordCode) throws OneTimePasswordErrorException {
         UserEntity existUser = userRepository.findById(id).get();
+        Integer oneTimePasswordCodeExist = oneTimePasswordRepository.findByOneTimePasswordCode(id);
+        if (!oneTimePasswordCodeExist.equals(oneTimePasswordCode)) {
+            throw new OneTimePasswordErrorException("The one time password code = " + oneTimePasswordCode + " not correctly. PLease, check you email.");
+        }
         existUser.setActive(!existUser.getActive());
         return UserModel.toUserModel(userRepository.save(existUser));
     }
