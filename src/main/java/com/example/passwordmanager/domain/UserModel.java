@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @Data
 public class UserModel {
 
-    UUID id;
+    private UUID id;
     private String username;
     private Boolean active;
     List<PasswordModel> passwordEntityList;

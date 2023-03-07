@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import java.util.Date;
 import java.util.UUID;
@@ -17,7 +18,7 @@ public class OneTimePasswordEntity {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator",
             parameters = {
-                    @org.hibernate.annotations.Parameter(
+                    @Parameter(
                             name = "uuid_gen_strategy_class",
                             value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
                     )
