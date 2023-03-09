@@ -1,10 +1,38 @@
 spring:
+  security:
+    user:
+      name: admin
+      password: admin
+  application:
+    name: Password Manager
   jpa:
     hibernate:
       ddl-auto: update
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/${MYSQL_DATABASE}?createDatabaseIfNotExist=true
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:3306/password_manager?createDatabaseIfNotExist=true
+    username: vasko
+    password: qwerty123456
+  info:
+    app:
+      name: Spring boot application
+      description: Spring boot application
+      version: 1.0.0
+      website: 'http://localhost:8080/api/v1/'
+    company:
+      name: Mentel Inc
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'health,info,prometheus,metrics'
+    info:
+      java:
+        enabled: true
+      env:
+        enabled: true
+    endpoint:
+      health:
+        show-details: always
+
 
