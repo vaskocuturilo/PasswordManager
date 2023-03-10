@@ -1,5 +1,6 @@
 package com.example.passwordmanager.domain;
 
+import com.example.passwordmanager.entity.OneTimePasswordEntity;
 import com.example.passwordmanager.entity.UserEntity;
 import lombok.Data;
 
@@ -14,8 +15,9 @@ public class UserModel {
     private String username;
     private Boolean active;
     List<PasswordModel> passwordEntityList;
+    private OneTimePasswordEntity oneTimePassword;
 
-    public static UserModel toUserModel(UserEntity userEntity) {
+    public static UserModel toFullUserModel(UserEntity userEntity) {
         UserModel userModel = new UserModel();
         userModel.setId(userEntity.getId());
         userModel.setUsername(userEntity.getUsername());
@@ -24,6 +26,18 @@ public class UserModel {
                 .stream()
                 .map(PasswordModel::toModel)
                 .collect(Collectors.toList()));
+        userModel.setOneTimePassword(userEntity.getOneTimePasswordEntity());
+
+        return userModel;
+    }
+
+    public static UserModel toUserModel(UserEntity userEntity) {
+        UserModel userModel = new UserModel();
+        userModel.setId(userEntity.getId());
+        userModel.setUsername(userEntity.getUsername());
+        userModel.setActive(userEntity.getActive());
+        userModel.setOneTimePassword(userEntity.getOneTimePasswordEntity());
+
         return userModel;
     }
 }

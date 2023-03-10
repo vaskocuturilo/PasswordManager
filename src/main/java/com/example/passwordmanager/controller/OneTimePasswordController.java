@@ -17,7 +17,7 @@ public class OneTimePasswordController {
         this.oneTimePasswordService = oneTimePasswordService;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     private ResponseEntity getOneTimePassword(@RequestParam UUID userId) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(oneTimePasswordService.returnOneTimePassword(userId));

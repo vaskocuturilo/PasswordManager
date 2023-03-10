@@ -14,11 +14,13 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final OneTimePasswordRepository oneTimePasswordRepository;
+    private final OneTimePasswordService oneTimePasswordService;
 
     public UserService(UserRepository userRepository,
-                       OneTimePasswordRepository oneTimePasswordRepository) {
+                       OneTimePasswordRepository oneTimePasswordRepository, OneTimePasswordService oneTimePasswordService) {
         this.userRepository = userRepository;
         this.oneTimePasswordRepository = oneTimePasswordRepository;
+        this.oneTimePasswordService = oneTimePasswordService;
     }
 
     public Iterable<UserEntity> getAllUsers() {
@@ -30,11 +32,14 @@ public class UserService {
             throw new UserAlreadyExist("User already exist, please change the username");
         }
 
-        return userRepository.save(user);
+        UserEntity saveUser = userRepository.save(user);
+        oneTimePasswordService.returnOneTimePassword(saveUser.getId());
+
+        return saveUser;
     }
 
     public UserModel getOneUser(final UUID id) {
-        return UserModel.toUserModel(userRepository.findById(id).get());
+        return UserModel.toFullUserModel(userRepository.findById(id).get());
     }
 
     public void deleteUser(UUID id) {
@@ -48,6 +53,6 @@ public class UserService {
             throw new OneTimePasswordErrorException("The one time password code = " + oneTimePasswordCode + " not correctly. PLease, check you email.");
         }
         existUser.setActive(!existUser.getActive());
-        return UserModel.toUserModel(userRepository.save(existUser));
+        return UserModel.toFullUserModel(userRepository.save(existUser));
     }
 }
