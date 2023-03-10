@@ -3,7 +3,6 @@ package com.example.passwordmanager.controller;
 import com.example.passwordmanager.entity.UserEntity;
 import com.example.passwordmanager.exceptions.OneTimePasswordErrorException;
 import com.example.passwordmanager.exceptions.UserAlreadyExist;
-import com.example.passwordmanager.services.OneTimePasswordService;
 import com.example.passwordmanager.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +14,10 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final OneTimePasswordService oneTimePasswordService;
 
-    public UserController(UserService userService, OneTimePasswordService oneTimePasswordService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.oneTimePasswordService = oneTimePasswordService;
     }
-
 
     @GetMapping("/all")
     public ResponseEntity getAllUsers() {
@@ -44,8 +40,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity createUser(@RequestBody UserEntity user) {
         try {
-            userService.createUser(user);
-            return ResponseEntity.ok(oneTimePasswordService.returnOneTimePassword(user.getId()));
+            return ResponseEntity.ok(userService.createUser(user));
         } catch (UserAlreadyExist exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
