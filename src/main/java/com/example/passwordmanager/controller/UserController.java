@@ -2,7 +2,9 @@ package com.example.passwordmanager.controller;
 
 import com.example.passwordmanager.entity.UserEntity;
 import com.example.passwordmanager.exceptions.OneTimePasswordErrorException;
+import com.example.passwordmanager.exceptions.UserAlreadyActive;
 import com.example.passwordmanager.exceptions.UserAlreadyExist;
+import com.example.passwordmanager.exceptions.UserNotFound;
 import com.example.passwordmanager.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,8 @@ public class UserController {
     public ResponseEntity getOneUser(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok(userService.getOneUser(id));
+        } catch (UserNotFound exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
@@ -49,9 +53,12 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity activeUser(@RequestParam UUID id, @RequestParam Integer code) {
+    public ResponseEntity activeUser(@RequestParam UUID userId, @RequestParam Integer code) {
         try {
-            return ResponseEntity.ok(userService.activeUser(id, code));
+            userService.activeUser(userId, code);
+            return ResponseEntity.ok("The user with id = " + userId + " was active.");
+        } catch (UserAlreadyActive exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (OneTimePasswordErrorException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
@@ -64,6 +71,8 @@ public class UserController {
         try {
             userService.deleteUser(id);
             return ResponseEntity.ok("User was delete.");
+        } catch (UserNotFound exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }

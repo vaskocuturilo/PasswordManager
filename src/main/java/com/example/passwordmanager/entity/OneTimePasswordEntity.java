@@ -30,7 +30,7 @@ public class OneTimePasswordEntity {
     private Integer oneTimePasswordCode;
     private Date expires;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     UserEntity user;

@@ -1,6 +1,7 @@
 package com.example.passwordmanager.controller;
 
 import com.example.passwordmanager.entity.PasswordEntity;
+import com.example.passwordmanager.exceptions.PasswordNotFoundException;
 import com.example.passwordmanager.exceptions.UserNotActive;
 import com.example.passwordmanager.services.PasswordManagerService;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,8 @@ public class PasswordManagerController {
     public ResponseEntity getPassword(@PathVariable String name) {
         try {
             return ResponseEntity.ok(passwordManagerService.getPasswordByName(name));
+        } catch (PasswordNotFoundException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
@@ -61,6 +64,8 @@ public class PasswordManagerController {
         try {
             passwordManagerService.deletePassword(id);
             return ResponseEntity.ok("The password entity was delete.");
+        } catch (PasswordNotFoundException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }

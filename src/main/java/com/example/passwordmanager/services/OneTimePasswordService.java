@@ -4,6 +4,7 @@ import com.example.passwordmanager.entity.OneTimePasswordEntity;
 import com.example.passwordmanager.entity.UserEntity;
 import com.example.passwordmanager.repositories.OneTimePasswordRepository;
 import com.example.passwordmanager.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -20,9 +21,11 @@ public class OneTimePasswordService {
 
     private OneTimePasswordHelpService oneTimePasswordHelpService;
 
-    public OneTimePasswordService(OneTimePasswordRepository oneTimePasswordRepository, UserRepository userRepository) {
-        this.oneTimePasswordRepository = oneTimePasswordRepository;
+    public OneTimePasswordService(
+            OneTimePasswordRepository oneTimePasswordRepository,
+            UserRepository userRepository) {
 
+        this.oneTimePasswordRepository = oneTimePasswordRepository;
         this.userRepository = userRepository;
     }
 
@@ -37,5 +40,10 @@ public class OneTimePasswordService {
         oneTimePasswordRepository.save(oneTimePassword);
 
         return oneTimePassword;
+    }
+
+    @Transactional
+    public void deleteByOneTimePasswordCode(Integer code) {
+        oneTimePasswordRepository.deleteByOneTimePasswordCode(code);
     }
 }

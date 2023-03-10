@@ -3,10 +3,11 @@ package com.example.passwordmanager.services;
 import com.example.passwordmanager.domain.PasswordModel;
 import com.example.passwordmanager.entity.PasswordEntity;
 import com.example.passwordmanager.entity.UserEntity;
+import com.example.passwordmanager.exceptions.PasswordNotFoundException;
 import com.example.passwordmanager.exceptions.UserNotActive;
+import com.example.passwordmanager.repositories.PasswordManagerRepository;
 import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-import com.example.passwordmanager.repositories.PasswordManagerRepository;
 
 import java.util.UUID;
 
@@ -27,7 +28,11 @@ public class PasswordManagerService {
         return passwordManagerRepository.findAll();
     }
 
-    public PasswordModel getPasswordByName(final String name) {
+    public PasswordModel getPasswordByName(final String name) throws PasswordNotFoundException {
+        PasswordEntity existPasswordEntity = passwordManagerRepository.findByName(name).get();
+        if (existPasswordEntity == null) {
+            throw new PasswordNotFoundException("The password with id = " + name + "was not found");
+        }
         return PasswordModel.toModel(passwordManagerRepository.findByName(name).get());
     }
 
@@ -49,7 +54,11 @@ public class PasswordManagerService {
 
     }
 
-    public void deletePassword(UUID id) {
+    public void deletePassword(UUID id) throws PasswordNotFoundException {
+        PasswordEntity existPasswordEntity = passwordManagerRepository.findById(id).get();
+        if (existPasswordEntity == null) {
+            throw new PasswordNotFoundException("The password with id = " + id + "was not found");
+        }
         passwordManagerRepository.deleteById(id);
     }
 }
