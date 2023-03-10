@@ -2,14 +2,12 @@ package com.example.passwordmanager.services;
 
 import com.example.passwordmanager.domain.UserModel;
 import com.example.passwordmanager.entity.UserEntity;
-import com.example.passwordmanager.exceptions.OneTimePasswordErrorException;
-import com.example.passwordmanager.exceptions.UserAlreadyActive;
-import com.example.passwordmanager.exceptions.UserAlreadyExist;
-import com.example.passwordmanager.exceptions.UserNotFound;
+import com.example.passwordmanager.exceptions.*;
 import com.example.passwordmanager.repositories.OneTimePasswordRepository;
 import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -41,18 +39,29 @@ public class UserService {
     }
 
     public UserModel getOneUser(final UUID id) throws UserNotFound {
-        UserEntity existUser = userRepository.findById(id).get();
-        if (existUser == null) {
-            throw new UserNotFound("The user with id = " + id + "was not found");
-        }
+        Optional<UserEntity> existUser = userRepository.findById(id);
+        existUser
+                .stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> {
+                    UserNotFound userNotFound = new UserNotFound("The user with id = " + id + " was not found");
+                    return userNotFound;
+                });
+
         return UserModel.toFullUserModel(userRepository.findById(id).get());
     }
 
     public void deleteUser(UUID id) throws UserNotFound {
-        UserEntity existUser = userRepository.findById(id).get();
-        if (existUser == null) {
-            throw new UserNotFound("The user with id = " + id + "was not found");
-        }
+        Optional<UserEntity> existUser = userRepository.findById(id);
+        existUser
+                .stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> {
+                    UserNotFound userNotFound = new UserNotFound("The user with id = " + id + " was not found");
+                    return userNotFound;
+                });
         userRepository.deleteById(id);
     }
 

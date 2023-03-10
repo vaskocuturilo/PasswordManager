@@ -9,6 +9,7 @@ import com.example.passwordmanager.repositories.PasswordManagerRepository;
 import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,10 +30,15 @@ public class PasswordManagerService {
     }
 
     public PasswordModel getPasswordByName(final String name) throws PasswordNotFoundException {
-        PasswordEntity existPasswordEntity = passwordManagerRepository.findByName(name).get();
-        if (existPasswordEntity == null) {
-            throw new PasswordNotFoundException("The password with id = " + name + "was not found");
-        }
+        Optional<PasswordEntity> existPasswordEntity = passwordManagerRepository.findByName(name);
+        existPasswordEntity
+                .stream()
+                .filter(user -> user.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> {
+                    PasswordNotFoundException passwordNotFoundException = new PasswordNotFoundException("The user with id = " + name + " was not found");
+                    return passwordNotFoundException;
+                });
         return PasswordModel.toModel(passwordManagerRepository.findByName(name).get());
     }
 
