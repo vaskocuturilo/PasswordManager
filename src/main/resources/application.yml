@@ -35,4 +35,6 @@ spring:
       health:
         show-details: always
 
+cipher:
+  key: ${SECRET_KEY}
 
