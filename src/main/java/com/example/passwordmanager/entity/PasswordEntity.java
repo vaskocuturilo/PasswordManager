@@ -1,5 +1,6 @@
 package com.example.passwordmanager.entity;
 
+import com.example.passwordmanager.encryption.AttributeEncryptor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -32,6 +33,7 @@ public class PasswordEntity {
     private String name;
 
     @Column(name = "password", nullable = false)
+    @Convert(converter = AttributeEncryptor.class)
     private String password;
 
     @ManyToOne
