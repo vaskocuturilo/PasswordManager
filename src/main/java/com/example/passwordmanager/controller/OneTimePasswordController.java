@@ -2,6 +2,7 @@ package com.example.passwordmanager.controller;
 
 import com.example.passwordmanager.services.OneTimePasswordService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,9 @@ public class OneTimePasswordController {
     @PostMapping
     private ResponseEntity getOneTimePassword(@RequestParam UUID userId) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(oneTimePasswordService.returnOneTimePassword(userId));
+            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(oneTimePasswordService.returnOneTimePassword(userId));
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
         }
     }
 }

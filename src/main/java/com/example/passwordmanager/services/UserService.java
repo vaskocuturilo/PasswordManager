@@ -7,8 +7,7 @@ import com.example.passwordmanager.repositories.OneTimePasswordRepository;
 import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -17,7 +16,8 @@ public class UserService {
     private final OneTimePasswordService oneTimePasswordService;
 
     public UserService(UserRepository userRepository,
-                       OneTimePasswordRepository oneTimePasswordRepository, OneTimePasswordService oneTimePasswordService) {
+                       OneTimePasswordRepository oneTimePasswordRepository,
+                       OneTimePasswordService oneTimePasswordService) {
         this.userRepository = userRepository;
         this.oneTimePasswordRepository = oneTimePasswordRepository;
         this.oneTimePasswordService = oneTimePasswordService;
@@ -27,7 +27,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public UserEntity createUser(final UserEntity user) throws UserAlreadyExist {
+    public UserModel createUser(final UserEntity user) throws UserAlreadyExist, UserHasNotContent {
+        if (user.getUsername().isBlank() || user.getPassword().isBlank()) {
+            throw new UserHasNotContent("The user body should contains is correct username and password");
+        }
+
         if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new UserAlreadyExist("User already exist, please change the username");
         }
@@ -35,7 +39,7 @@ public class UserService {
         UserEntity saveUser = userRepository.save(user);
         oneTimePasswordService.returnOneTimePassword(saveUser.getId());
 
-        return saveUser;
+        return UserModel.toUserModel(saveUser);
     }
 
     public UserModel getOneUser(final UUID id) throws UserNotFound {
@@ -62,17 +66,18 @@ public class UserService {
                     UserNotFound userNotFound = new UserNotFound("The user with id = " + id + " was not found");
                     return userNotFound;
                 });
+
         userRepository.deleteById(id);
     }
 
     public UserModel activeUser(final UUID userId, final Integer oneTimePasswordCode) throws OneTimePasswordErrorException, UserAlreadyActive {
         UserEntity existUser = userRepository.findById(userId).get();
         Integer oneTimePasswordCodeExist = oneTimePasswordRepository.findByOneTimePasswordCode(userId);
-        if (existUser.getActive() == true) {
+        if (existUser.getActive()) {
             throw new UserAlreadyActive("The user with id = " + userId + " was active.");
         }
         if (!oneTimePasswordCodeExist.equals(oneTimePasswordCode)) {
-            throw new OneTimePasswordErrorException("The one time password code = " + oneTimePasswordCode + " not correctly. PLease, check you email.");
+            throw new OneTimePasswordErrorException("The one time password code = " + oneTimePasswordCode + " not correctly. Please, check you email.");
         }
         existUser.setActive(!existUser.getActive());
         oneTimePasswordService.deleteByOneTimePasswordCode(oneTimePasswordCode);

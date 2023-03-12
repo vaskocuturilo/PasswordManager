@@ -23,21 +23,23 @@ public class EncryptionComponent {
     private String transformationType = "AES/GCM/NoPadding";
     private String algorithm = "AES";
 
+    private Integer Length = 128;
+
     public String encrypt(String value) {
         try {
             SecureRandom random = new SecureRandom();
             byte[] bytesIV = new byte[16];
             random.nextBytes(bytesIV);
-            GCMParameterSpec iv = new GCMParameterSpec(128, bytesIV);
-            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
+            GCMParameterSpec spec = new GCMParameterSpec(Length, bytesIV);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), algorithm);
 
             Cipher cipher = Cipher.getInstance(transformationType);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, iv);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, spec);
             byte[] encrypted = cipher.doFinal(value.getBytes());
             return Base64.encodeBase64String(encrypted);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
-                 InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
-            throw new IllegalStateException(ex.getMessage());
+                 InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+            throw new IllegalStateException(exception.getMessage());
         }
     }
 
@@ -46,17 +48,17 @@ public class EncryptionComponent {
             SecureRandom random = new SecureRandom();
             byte[] bytesIV = new byte[16];
             random.nextBytes(bytesIV);
-            GCMParameterSpec iv = new GCMParameterSpec(128, bytesIV);
-            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
+            GCMParameterSpec spec = new GCMParameterSpec(Length, bytesIV);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), algorithm);
 
             Cipher cipher = Cipher.getInstance(transformationType);
-            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, iv);
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, spec);
 
             byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
             return new String(original);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
-                 InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
-            throw new IllegalStateException(ex.getMessage());
+                 InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+            throw new IllegalStateException(exception.getMessage());
         }
     }
 }
