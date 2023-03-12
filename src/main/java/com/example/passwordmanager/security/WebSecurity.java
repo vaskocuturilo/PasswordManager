@@ -17,6 +17,8 @@ public class WebSecurity {
                 .headers((headers) -> headers
                         .frameOptions().disable())
                 .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/api/v1/users/all").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/passwords/all").hasRole("ADMIN")
                         .requestMatchers("/").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic();

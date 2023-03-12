@@ -1,13 +1,14 @@
 package com.example.passwordmanager.controller;
 
 import com.example.passwordmanager.entity.UserEntity;
-import com.example.passwordmanager.exceptions.OneTimePasswordErrorException;
-import com.example.passwordmanager.exceptions.UserAlreadyActive;
-import com.example.passwordmanager.exceptions.UserAlreadyExist;
-import com.example.passwordmanager.exceptions.UserNotFound;
+import com.example.passwordmanager.exceptions.*;
 import com.example.passwordmanager.services.UserService;
+import jakarta.validation.Valid;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.UUID;
 
@@ -35,20 +36,42 @@ public class UserController {
         try {
             return ResponseEntity.ok(userService.getOneUser(id));
         } catch (UserNotFound exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
         }
     }
 
     @PostMapping
-    public ResponseEntity createUser(@RequestBody UserEntity user) {
+    public ResponseEntity createUser(@Valid @RequestBody UserEntity user, UriComponentsBuilder uriComponentsBuilder) {
         try {
-            return ResponseEntity.ok(userService.createUser(user));
+            return ResponseEntity.created(uriComponentsBuilder
+                            .path("/api/v1/users/")
+                            .build()
+                            .toUri())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(userService.createUser(user));
         } catch (UserAlreadyExist exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
+        } catch (UserHasNotContent exception) {
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
         }
     }
 
@@ -56,13 +79,25 @@ public class UserController {
     public ResponseEntity activeUser(@RequestParam UUID userId, @RequestParam Integer code) {
         try {
             userService.activeUser(userId, code);
-            return ResponseEntity.ok("The user with id = " + userId + " was active.");
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("The user with id = " + userId + " was active.");
         } catch (UserAlreadyActive exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
         } catch (OneTimePasswordErrorException exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
         }
     }
 
@@ -70,11 +105,21 @@ public class UserController {
     public ResponseEntity deleteUser(@PathVariable UUID id) {
         try {
             userService.deleteUser(id);
-            return ResponseEntity.ok("User was delete.");
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("The user with id = " + id + " was delete");
         } catch (UserNotFound exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(exception.getMessage());
         }
     }
 }

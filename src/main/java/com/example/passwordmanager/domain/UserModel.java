@@ -40,4 +40,10 @@ public class UserModel {
 
         return userModel;
     }
+
+    public static UserModel toListModel(List<UserEntity> userEntity) {
+        UserModel userModel = new UserModel();
+
+        return userModel;
+    }
 }
