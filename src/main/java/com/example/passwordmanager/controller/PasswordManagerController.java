@@ -22,7 +22,7 @@ public class PasswordManagerController {
     @GetMapping("/{name}")
     public ResponseEntity getPassword(@PathVariable String name) {
         try {
-            return ResponseEntity.ok(passwordManagerService.getPasswordByName(name));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(passwordManagerService.getPasswordByName(name));
         } catch (PasswordNotFoundException exception) {
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
         } catch (Exception exception) {

@@ -10,9 +10,9 @@ spring:
       ddl-auto: update
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/password_manager?createDatabaseIfNotExist=true
-    username: vasko
-    password: qwerty123456
+    url: jdbc:mysql://localhost:3306/${MYSQL_DATABASE}?createDatabaseIfNotExist=true
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
   info:
     app:
       name: Spring boot application
@@ -36,5 +36,5 @@ spring:
         show-details: always
 
 cipher:
-  key: '996b352bbeb95628a61d4f0fbb72844e'
+  key: ${SECRET_KEY}
 
