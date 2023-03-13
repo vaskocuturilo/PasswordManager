@@ -35,4 +35,6 @@ You will need the following technologies available to try it out:
 - Add email sender service for one time password. 
 - Add React front end.
 - Add unit tests. 
+- Add Intergration tess.
 - Add API tests. 
+- Add UI tests.
