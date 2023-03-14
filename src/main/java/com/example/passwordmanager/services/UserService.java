@@ -23,8 +23,14 @@ public class UserService {
         this.oneTimePasswordService = oneTimePasswordService;
     }
 
-    public Iterable<UserEntity> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserModel> getAllUsers() {
+        List<UserModel> userModel = new ArrayList<>();
+        Iterable<UserEntity> userEntities = userRepository.findAll();
+
+        for (UserEntity userEntity : userEntities) {
+            userModel.add(UserModel.toListModel(userEntity));
+        }
+        return userModel;
     }
 
     public UserModel createUser(final UserEntity user) throws UserAlreadyExist, UserHasNotContent {

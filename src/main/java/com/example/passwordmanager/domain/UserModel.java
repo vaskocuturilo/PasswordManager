@@ -41,8 +41,11 @@ public class UserModel {
         return userModel;
     }
 
-    public static UserModel toListModel(List<UserEntity> userEntity) {
+    public static UserModel toListModel(UserEntity userEntity) {
         UserModel userModel = new UserModel();
+        userModel.setId(userEntity.getId());
+        userModel.setUsername(userEntity.getUsername());
+        userModel.setActive(userEntity.getActive());
 
         return userModel;
     }

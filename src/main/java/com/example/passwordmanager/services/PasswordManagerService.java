@@ -9,6 +9,8 @@ import com.example.passwordmanager.repositories.PasswordManagerRepository;
 import com.example.passwordmanager.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,9 +26,14 @@ public class PasswordManagerService {
         this.userRepository = userRepository;
     }
 
-    public Iterable<PasswordEntity> getAllPasswords() {
+    public Iterable<PasswordModel> getAllPasswords() {
+        List<PasswordModel> passwordModels = new ArrayList<>();
+        Iterable<PasswordEntity> passwordEntities = passwordManagerRepository.findAll();
 
-        return passwordManagerRepository.findAll();
+        for (PasswordEntity passwordEntity : passwordEntities) {
+            passwordModels.add(PasswordModel.toListModel(passwordEntity));
+        }
+        return passwordModels;
     }
 
     public PasswordModel getPasswordByName(final String name) throws PasswordNotFoundException {
