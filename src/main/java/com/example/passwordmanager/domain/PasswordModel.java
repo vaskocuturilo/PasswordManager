@@ -19,4 +19,12 @@ public class PasswordModel {
 
         return passwordModel;
     }
+
+    public static PasswordModel toListModel(PasswordEntity passwordEntity) {
+        PasswordModel passwordModel = new PasswordModel();
+        passwordModel.setId(passwordEntity.getId());
+        passwordModel.setName(passwordEntity.getName());
+
+        return passwordModel;
+    }
 }
