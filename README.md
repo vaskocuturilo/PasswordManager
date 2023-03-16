@@ -35,6 +35,18 @@ You will need the following technologies available to try it out:
 - Add email sender service for one time password. 
 - Add React front end.
 - Add unit tests. 
-- Add Intergration tess.
+- Add Integration tess.
 - Add API tests. 
 - Add UI tests.
+
+
+## Instructions how to run:
+
+First of all: You should create a database with name input_numbers.
+
+Execute command
+to run test ```maven clean package```
+
+## Swagger-ui:
+http://localhost:8080/swagger-ui/index.html
+![](https://i.postimg.cc/bwsGyd5K/218014eb-92fc-4c14-b5a9-e9834813deb8.png)
