@@ -1,10 +1,12 @@
 package com.example.passwordmanager.mail;
 
-import com.example.passwordmanager.services.EmailHelpService;
+import com.example.passwordmanager.entity.Mail;
+import com.example.passwordmanager.services.MailServiceImplementation;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import jakarta.mail.internet.MimeMessage;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,12 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class EmailHelpServiceTest {
-    private final EmailHelpService emailHelpService;
-
-    public EmailHelpServiceTest(EmailHelpService emailHelpService) {
-        this.emailHelpService = emailHelpService;
-    }
+@AllArgsConstructor
+class EmailHelpServiceTest {
+    private final MailServiceImplementation mailServiceImplementation;
 
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -27,7 +26,12 @@ public class EmailHelpServiceTest {
     @Test
     void testSendEmail() throws Exception {
 
-        emailHelpService.sendEmail("testemailservice@qa.team", "Test email service", "Test email");
+        Mail mail = new Mail();
+        mail.setMailFrom("documentationfortesting@gmail.com");
+        mail.setMailTo("testserviceimplonetimepasswprd@qa.team");
+        mail.setMailSubject("Thanks!");
+        mail.setMailContent("Thank you for reading my blogs!");
+        mailServiceImplementation.sendEmail(mail);
 
         MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
         MimeMessage receivedMessage = receivedMessages[0];
