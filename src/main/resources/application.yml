@@ -2,7 +2,7 @@ spring:
   security:
     user:
       name: admin
-      password: admin
+      password: $2a$12$7Bg57uTtN7GWIdiqRW4h5e/aOUFagHwkEGv9byUr0bb/QbUU8S4rS
   application:
     name: Password Manager
   jpa:
