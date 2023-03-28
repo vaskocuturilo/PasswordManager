@@ -32,6 +32,7 @@ You will need the following technologies available to try it out:
 - Create functionality for store passwords to databases with encryption. ✔️
 - Add one time password functionality. ✔️
 - Add active a new user functionality. ✔️
+- Add functionality for subscribing/unsubscribing.
 - Add email sender service for one time password. 
 - Add functionality for JWT token.
 - Add React front end.
