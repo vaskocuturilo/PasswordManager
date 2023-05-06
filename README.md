@@ -43,8 +43,6 @@ You will need the following technologies available to try it out:
 
 ## Instructions how to run:
 
-First of all: You should create a database with name input_numbers.
-
 Execute command
 to run test ```maven clean package```
 
